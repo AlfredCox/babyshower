@@ -274,6 +274,21 @@
   .modal-msg.error{ background:#fbe4e0; color:#a24b3a; }
   .modal-msg.success{ background:#e3ecdb; color:var(--sage-dark); }
 
+  .post-success{ margin-top:16px; }
+  .post-success-text{ font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--cocoa); opacity:.7; margin-bottom:10px; }
+  .post-success-actions{ display:flex; gap:8px; }
+  .btn-share{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:7px;
+    background:var(--sage); color:var(--white); border:none;
+    padding:11px 10px; border-radius:999px; font-family:'Quicksand'; font-weight:700;
+    font-size:13.5px; cursor:pointer; text-decoration:none; transition:background .2s ease;
+  }
+  .btn-share:hover{ background:var(--sage-dark); }
+  .btn-share.outline{
+    background:var(--white); color:var(--sage-dark); border:2px solid var(--cream-2);
+  }
+  .btn-share.outline:hover{ border-color:var(--sage); background:var(--white); }
+
   /* ---------- footer ---------- */
   footer{
     text-align:center; padding:70px 24px 60px;
@@ -412,7 +427,21 @@
 
     <div class="modal-msg" id="modalMsg"></div>
 
-    <div class="modal-actions">
+    <div class="post-success" id="postSuccess" style="display:none;">
+      <p class="post-success-text">Guárdalo para no olvidarlo:</p>
+      <div class="post-success-actions">
+        <a class="btn-share" id="shareWaLink" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.6.1-.2.3-.7.9-.9 1-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.3.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+          Enviarme por WhatsApp
+        </a>
+        <button class="btn-share outline" id="copyDetail">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="16" height="16"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          Copiar
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-actions" id="modalActions">
       <button class="btn-secondary" id="cancelModal">Cancelar</button>
       <button class="btn-primary" id="confirmModal">Reservar</button>
     </div>
@@ -519,6 +548,10 @@ const inpNombre = document.getElementById('inpNombre');
 const inpDni = document.getElementById('inpDni');
 const modalMsg = document.getElementById('modalMsg');
 const confirmBtn = document.getElementById('confirmModal');
+const postSuccess = document.getElementById('postSuccess');
+const shareWaLink = document.getElementById('shareWaLink');
+const copyDetailBtn = document.getElementById('copyDetail');
+const modalActions = document.getElementById('modalActions');
 let currentGift = null;
 
 function openModal(name, card){
@@ -530,6 +563,8 @@ function openModal(name, card){
   modalMsg.textContent = "";
   confirmBtn.disabled = false;
   confirmBtn.textContent = "Reservar";
+  postSuccess.style.display = "none";
+  modalActions.style.display = "flex";
   overlay.classList.add('open');
 
   // Verificamos en segundo plano, sin bloquear la apertura del modal.
@@ -585,8 +620,18 @@ confirmBtn.addEventListener('click', async () => {
       modalMsg.textContent = "¡Listo! Tu regalo quedó reservado 💛";
       reservados[currentGift] = nombre;
       renderGifts();
-      confirmBtn.textContent = "Reservado ✓";
-      setTimeout(closeModal, 1400);
+
+      const detailText = `🎁 Reservé este regalo para el baby shower de Meylin y Alfredo:\n\n"${currentGift}"\n\n📅 30 de octubre, 4:00 pm`;
+      shareWaLink.href = `https://wa.me/?text=${encodeURIComponent(detailText)}`;
+      copyDetailBtn.textContent = "Copiar";
+      copyDetailBtn.onclick = () => {
+        navigator.clipboard.writeText(detailText).then(() => {
+          copyDetailBtn.innerHTML = "✓ Copiado";
+          setTimeout(() => { copyDetailBtn.textContent = "Copiar"; }, 1800);
+        });
+      };
+      postSuccess.style.display = "block";
+      modalActions.style.display = "none";
     } else {
       modalMsg.className = "modal-msg error show";
       modalMsg.textContent = data.error || "Ese regalo ya fue reservado por alguien más.";
