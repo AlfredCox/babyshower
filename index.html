@@ -360,23 +360,9 @@
   }
   .yape-name{
     font-family:'Baloo 2'; font-weight:700; font-size:1.05rem; color:var(--cocoa);
-    margin-bottom:20px;
+    margin-bottom:6px;
   }
-  .yape-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
-  .btn-yape{
-    display:inline-flex; align-items:center; gap:7px;
-    background:#8B5CF6; color:var(--white);
-    font-family:'Baloo 2'; font-weight:700; font-size:.92rem;
-    padding:12px 20px; border-radius:999px;
-    text-decoration:none;
-    transition:transform .2s ease, background .2s ease;
-  }
-  .btn-yape:hover{ transform:scale(1.03); background:#7c4deb; }
-  .btn-yape.outline{
-    background:var(--white); color:#8B5CF6; border:2px solid #e6dcfb;
-  }
-  .btn-yape.outline:hover{ background:#f6f2fe; }
-  .yape-hint{ font-size:12px; opacity:.55; margin-top:16px; line-height:1.4; }
+  .yape-hint{ font-size:13px; opacity:.65; margin-top:6px; line-height:1.4; }
 
   .sr-loading{ font-size:13px; opacity:.55; margin-top:16px; }
 
@@ -541,16 +527,7 @@
       <div class="yape-card reveal">
         <img src="yape-qr.png" alt="Código QR de Yape de Alfredo Vargas" class="yape-qr-img">
         <div class="yape-name">Alfredo Aldhair Vargas Yactayo</div>
-        <div class="yape-actions">
-          <a class="btn-yape" id="openYapeBtn" href="yape://">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/></svg>
-            Abrir Yape
-          </a>
-          <a class="btn-yape outline" id="getYapeBtn" href="https://www.yape.com.pe" target="_blank" rel="noopener">
-            ¿No tienes Yape?
-          </a>
-        </div>
-        <p class="yape-hint">Si el botón no abre la app automáticamente, no te preocupes — solo escanea el QR desde tu app Yape.</p>
+        <p class="yape-hint">Escanea el código desde tu app Yape para aportar 💜</p>
       </div>
     </div>
   </section>
