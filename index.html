@@ -113,9 +113,10 @@
     font-size:clamp(2.6rem, 7vw, 4.6rem);
     line-height:1.05;
     font-weight:800;
-    max-width:13ch;
+    max-width:16ch;
   }
   .hero h1 .hline{ display:block; }
+  .hero h1 .word{ display:inline-block; white-space:nowrap; }
   .hero h1 .letter{
     display:inline-block;
     opacity:0;
@@ -343,6 +344,40 @@
   footer .paw-row{ display:flex; justify-content:center; gap:10px; margin-bottom:18px; opacity:.5;}
   footer .paw-row svg{width:20px;height:20px;}
 
+  /* ---------- yape ---------- */
+  .yape-card{
+    max-width:360px; margin:40px auto 0;
+    background:var(--white);
+    border-radius:28px;
+    padding:32px 28px 26px;
+    box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .yape-qr-img{
+    width:100%; max-width:220px; border-radius:18px;
+    box-shadow:0 10px 24px rgba(139,92,246,0.18);
+    margin-bottom:18px;
+  }
+  .yape-name{
+    font-family:'Baloo 2'; font-weight:700; font-size:1.05rem; color:var(--cocoa);
+    margin-bottom:20px;
+  }
+  .yape-actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .btn-yape{
+    display:inline-flex; align-items:center; gap:7px;
+    background:#8B5CF6; color:var(--white);
+    font-family:'Baloo 2'; font-weight:700; font-size:.92rem;
+    padding:12px 20px; border-radius:999px;
+    text-decoration:none;
+    transition:transform .2s ease, background .2s ease;
+  }
+  .btn-yape:hover{ transform:scale(1.03); background:#7c4deb; }
+  .btn-yape.outline{
+    background:var(--white); color:#8B5CF6; border:2px solid #e6dcfb;
+  }
+  .btn-yape.outline:hover{ background:#f6f2fe; }
+  .yape-hint{ font-size:12px; opacity:.55; margin-top:16px; line-height:1.4; }
+
   .sr-loading{ font-size:13px; opacity:.55; margin-top:16px; }
 
   /* ---------- reveal on scroll ---------- */
@@ -494,6 +529,32 @@
     </div>
   </section>
 
+  <!-- ============ YAPE ============ -->
+  <section class="stop" id="yape">
+    <div class="stop-marker reveal">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M14 14h2.5M18.5 14H20M14 17.5v2.5M17 17h.01M14 20h6v-6"/></svg>
+    </div>
+    <h2>¿Prefieres aportar por Yape?</h2>
+    <p class="lead">También es bienvenido. Escanea el código con tu app y listo, sin vueltas 💜</p>
+
+    <div class="wrap">
+      <div class="yape-card reveal">
+        <img src="yape-qr.png" alt="Código QR de Yape de Alfredo Vargas" class="yape-qr-img">
+        <div class="yape-name">Alfredo Aldhair Vargas Yactayo</div>
+        <div class="yape-actions">
+          <a class="btn-yape" id="openYapeBtn" href="yape://">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/></svg>
+            Abrir Yape
+          </a>
+          <a class="btn-yape outline" id="getYapeBtn" href="https://www.yape.com.pe" target="_blank" rel="noopener">
+            ¿No tienes Yape?
+          </a>
+        </div>
+        <p class="yape-hint">Si el botón no abre la app automáticamente, no te preocupes — solo escanea el QR desde tu app Yape.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ RSVP (al final, no bloquea la reserva de regalos) ============ -->
   <section class="stop" id="confirmar">
     <div class="stop-marker reveal">
@@ -562,7 +623,7 @@
    CONFIGURACIÓN — reemplaza esta URL después de publicar
    tu Google Apps Script (ver INSTRUCCIONES.md)
 ====================================================== */
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxSuV2A-pknfXKCFoWOMGKsORVhVyNkE_GCZfYO0-qleCDS0czE8UrBoxmm7omWLdcsew/exec";
+const APPS_SCRIPT_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
 const WHATSAPP_NUMBER = "51998363419";
 
 /* ======================================================
@@ -609,13 +670,22 @@ document.getElementById('waLink').href = `https://wa.me/${WHATSAPP_NUMBER}?text=
   function buildLine(text){
     const line = document.createElement('span');
     line.className = 'hline';
-    [...text].forEach(ch => {
-      const span = document.createElement('span');
-      span.className = 'letter';
-      span.textContent = ch === ' ' ? '\u00A0' : ch;
-      span.style.animationDelay = delay.toFixed(2) + 's';
-      delay += step;
-      line.appendChild(span);
+    const words = text.split(' ');
+    words.forEach((word, wIdx) => {
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'word';
+      [...word].forEach(ch => {
+        const span = document.createElement('span');
+        span.className = 'letter';
+        span.textContent = ch;
+        span.style.animationDelay = delay.toFixed(2) + 's';
+        delay += step;
+        wordSpan.appendChild(span);
+      });
+      line.appendChild(wordSpan);
+      if(wIdx < words.length - 1){
+        line.appendChild(document.createTextNode(' '));
+      }
     });
     return line;
   }
