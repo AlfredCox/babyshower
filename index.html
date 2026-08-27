@@ -521,14 +521,7 @@ const modalMsg = document.getElementById('modalMsg');
 const confirmBtn = document.getElementById('confirmModal');
 let currentGift = null;
 
-async function openModal(name, card){
-  // Antes de abrir el formulario, revisamos el estado más reciente
-  // por si alguien lo reservó hace unos segundos desde otro celular/PC.
-  await loadReservations();
-  if(reservados.hasOwnProperty(name)){
-    alert("Justo se acaba de reservar este regalo desde otro dispositivo. Elige otro 🙏");
-    return;
-  }
+function openModal(name, card){
   currentGift = name;
   modalGiftName.textContent = name;
   inpNombre.value = "";
@@ -538,6 +531,16 @@ async function openModal(name, card){
   confirmBtn.disabled = false;
   confirmBtn.textContent = "Reservar";
   overlay.classList.add('open');
+
+  // Verificamos en segundo plano, sin bloquear la apertura del modal.
+  // La verificación real (que evita duplicados) ocurre al guardar en el servidor.
+  loadReservations().then(() => {
+    if(currentGift === name && reservados.hasOwnProperty(name)){
+      modalMsg.className = "modal-msg error show";
+      modalMsg.textContent = "Justo se acaba de reservar este regalo desde otro dispositivo.";
+      confirmBtn.disabled = true;
+    }
+  });
 }
 function closeModal(){
   overlay.classList.remove('open');
